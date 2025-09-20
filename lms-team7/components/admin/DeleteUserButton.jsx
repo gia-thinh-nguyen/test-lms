@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useDeleteUser } from '../../hooks/useDeleteUser';
+import { useDeleteUser } from '../../hooks/admin/useDeleteUser';
 
 export default function DeleteUserButton({ userId }) {
   const { deleteUser, isDeleting } = useDeleteUser();
