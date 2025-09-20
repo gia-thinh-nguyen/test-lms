@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useCreateTeacher } from '@/hooks/useCreateTeacher'
+import { useCreateTeacher } from '@/hooks/admin/useCreateTeacher'
 
 const page = () => {
   const { createTeacher, isCreating, error, success, resetState } = useCreateTeacher();
