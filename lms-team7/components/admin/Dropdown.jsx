@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 
-export default function Dropdown({ label, count, items }) {
+export default function Dropdown({ label, count, users }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative inline-block text-left w-full mb-4">
@@ -15,9 +15,9 @@ export default function Dropdown({ label, count, items }) {
       {open && (
         <div className="origin-top-right absolute left-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
           <div className="py-1">
-            {items.map((item, idx) => (
+            {users.map((user, idx) => (
               <div key={idx} className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-100 cursor-pointer">
-                {item}
+                {user.firstName} {user.lastName}
               </div>
             ))}
           </div>

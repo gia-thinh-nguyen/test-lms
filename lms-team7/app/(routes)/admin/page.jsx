@@ -1,12 +1,29 @@
 import Dropdown from "../../../components/admin/Dropdown";
-
+import { clerkClient } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
+import UserDropdown from "../../../components/admin/UserDropdown";
 // Dummy data
-const dummyAdmin = { name: "Admin John Doe" };
-const dummyTeachers = ["Alice Smith", "Bob Johnson", "Chris Evans", "Dana White", "Eve Adams"];
-const dummyStudents = ["Charlie Brown", "Daisy Miller", "Ethan Lee", "Fiona Green", "George King", "Hannah Scott"];
 const dummyCourses = ["Math 101", "History 201", "Science 301", "Art 401"];
 
 export default async function AdminPage() {
+  // Get current user using server-side auth
+  const { userId } = await auth();
+  const client = await clerkClient();
+  
+  // Get current user details
+  const currentUser = userId ? await client.users.getUser(userId) : null;
+  const currentUserFullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : "Admin User";
+
+  const rawUsers = (await client.users.getUserList()).data;
+  
+  // Serialize user data to plain objects for client components
+  const users = rawUsers.map(user => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    emailAddress: user.emailAddresses.find((email) => email.id === user.primaryEmailAddressId)?.emailAddress,
+    role: user.publicMetadata.role || 'student'
+  }));
 
   return (
     <div className="flex min-h-screen">
@@ -16,12 +33,11 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
           <div className="mb-4">
             <span className="font-semibold">Welcome, </span>
-            <span className="text-blue-700 font-semibold">{dummyAdmin.name}</span>
+            <span className="text-blue-700 font-semibold">{currentUserFullName}</span>
           </div>
           <div className="space-y-4">
-            <Dropdown label="Teachers" count={dummyTeachers.length} items={dummyTeachers} />
-            <Dropdown label="Students" count={dummyStudents.length} items={dummyStudents} />
-            <Dropdown label="Courses" count={dummyCourses.length} items={dummyCourses} />
+            <UserDropdown label="Users" count={users.length} users={users} />
+            
           </div>
         </div>
       </div>
